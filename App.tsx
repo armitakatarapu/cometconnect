@@ -1,21 +1,20 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';  // Import Navigation Container
-import { createNativeStackNavigator } from '@react-navigation/native-stack';  // Import Stack Navigator
-import HomeScreen from './HomeScreen.tsx'; // Import HomeScreen component
-import LoginScreen from './LoginScreen.tsx'; // Import LoginScreen component
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './HomeScreen';  // Ensure correct path
+import LoginScreen from './LoginScreen';  // Ensure correct path
+import CreateAccountScreen from './CreateAccountScreen';  // Import the Create Account screen
+import { StackParamList } from './types';  // Import StackParamList
 
-// Create the stack navigator, which will manage navigation between screens
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<StackParamList>();
 
 const App = () => {
   return (
-    // Wrap the entire app with NavigationContainer
     <NavigationContainer>
-      <Stack.Navigator>
-        {/* Define the Home screen */}
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        {/* Define the Login screen */}
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,29 +1,30 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackParamList } from './types'; // Import the types for navigation
 
-// Define the param list for your navigator
-type RootStackParamList = {
-  Home: undefined;  // Home screen doesn't expect parameters
-  Login: undefined;  // Login screen doesn't expect parameters
-};
+type HomeScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Home'>;
 
-// Type for the navigation prop
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
-
-// Define the type for the component props, including the navigation prop
-type HomeScreenProps = {
+type Props = {
   navigation: HomeScreenNavigationProp;
 };
 
-const HomeScreen = ({ navigation }: HomeScreenProps) => {
+const HomeScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Join the Community as UTD!</Text>
+      
       <Button
         title="Login"
-        onPress={() => navigation.navigate('Login')} // This will navigate to the Login screen
-        color="#CC6D4C" // Button color
+        onPress={() => navigation.navigate('Login')}
+        color="#CC6D4C"
+      />
+      
+      {/* Create Account Button */}
+      <Button
+        title="Create an Account"
+        onPress={() => navigation.navigate('CreateAccount')} // Navigates to CreateAccountScreen
+        color="#4C9CCF" // Choose any color you like
       />
     </View>
   );
@@ -32,7 +33,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#C4E6DF',  // Background color
+    backgroundColor: '#C4E6DF',
     alignItems: 'center',
     justifyContent: 'center',
   },

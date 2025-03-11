@@ -1,17 +1,11 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackParamList } from './types'; // Correct import
 
-// Define the param list for your navigator (make sure it includes Login)
-type RootStackParamList = {
-  Home: undefined;  // Home screen doesn't expect parameters
-  Login: undefined;  // Login screen doesn't expect parameters
-};
+// Define the param list for your navigator
+type LoginScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Login'>;
 
-// Type for the navigation prop in LoginScreen
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
-
-// Define the type for the component props, including the navigation prop
 type LoginScreenProps = {
   navigation: LoginScreenNavigationProp;
 };
