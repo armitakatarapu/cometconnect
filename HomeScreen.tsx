@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from './types'; // Import the types for navigation
 
@@ -12,20 +12,21 @@ type Props = {
 const HomeScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Join the Community as UTD!</Text>
-      
-      <Button
-        title="Login"
-        onPress={() => navigation.navigate('Login')}
-        color="#CC6D4C"
-      />
-      
-      {/* Create Account Button */}
-      <Button
-        title="Create an Account"
-        onPress={() => navigation.navigate('CreateAccount')} // Navigates to CreateAccountScreen
-        color="#4C9CCF" // Choose any color you like
-      />
+      {/* Move the title higher by decreasing marginBottom */}
+      <Text style={styles.title}>Join the Community at UTD!</Text>
+
+      {/* Login Link */}
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.link}>
+        <Text style={styles.linkText}>Login</Text>
+      </TouchableOpacity>
+
+      {/* Add space between the buttons */}
+      <View style={styles.buttonSpacing} />
+
+      {/* Create Account Link */}
+      <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')} style={styles.link}>
+        <Text style={styles.linkText}>Create an Account</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -35,13 +36,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#C4E6DF',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',  // Move the content to the top
+    paddingTop: 200, // Lower this value to move content higher
   },
   title: {
-    fontSize: 24,
+    fontSize: 30, // Increased font size
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 20, // Increased marginBottom to move the title higher
     color: 'black',
+  },
+  link: {
+    marginVertical: 15,  // Adds more space between buttons
+  },
+  linkText: {
+    fontSize: 22,  // Increased font size for the buttons
+    color: '#CC6D4C',  // Text color for the links (you can customize this)
+    fontWeight: 'bold',  // Make text bold for better visibility
+  },
+  buttonSpacing: {
+    marginVertical: 15,  // Adds space between the two links
   },
 });
 

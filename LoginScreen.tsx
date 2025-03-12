@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Animated } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from './types'; // Correct import
 
@@ -11,13 +11,91 @@ type LoginScreenProps = {
 };
 
 const LoginScreen = ({ navigation }: LoginScreenProps) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Animation for the comet
+  const cometAnim = useRef(new Animated.Value(0)).current; // Initial value
+
+  useEffect(() => {
+    // Comet animation wooshing in from the top to the middle of the screen
+    Animated.timing(cometAnim, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
+  }, [cometAnim]);
+
+  const handleLogin = () => {
+    if (username && password) {
+      Alert.alert('Login functionality coming soon!');
+    } else {
+      Alert.alert('Please enter both username and password.');
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login Screen</Text>
-      <Button
-        title="Login"
-        onPress={() => Alert.alert('Login functionality coming soon!')} // Use Alert instead of alert
+      {/* Animated comet */}
+      <Animated.View
+        style={[
+          styles.comet,
+          {
+            opacity: cometAnim,
+            transform: [
+              {
+                translateY: cometAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-100, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <Text style={styles.cometText}>🌠</Text>
+      </Animated.View>
+
+      {/* Title */}
+      <Text style={styles.title}>COMET CONNECT</Text>
+
+      {/* Username Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="USERNAME"
+        placeholderTextColor="#C4E6DF" // Light teal placeholder color
+        value={username}
+        onChangeText={setUsername}
       />
+
+      {/* Password Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="PASSWORD"
+        placeholderTextColor="#C4E6DF" // Light teal placeholder color
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+
+      {/* Create Login Button */}
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={() => navigation.navigate('Login')}
+      >
+        <Text style={styles.loginButtonText}>Login</Text>
+      </TouchableOpacity>
+
+      {/* Separator Line */}
+      <View style={styles.separator} />
+
+      {/* Create Account Button */}
+      <TouchableOpacity
+        style={styles.createAccountButton}
+        onPress={() => navigation.navigate('CreateAccount')}
+      >
+        <Text style={styles.createAccountButtonText}>CREATE AN ACCOUNT</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -25,15 +103,72 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#C4E6DF', // Background color
+    backgroundColor: '#1A2A3D', // Dark navy background color
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  comet: {
+    position: 'absolute',
+    top: 50,
+    left: '50%',
+    transform: [{ translateX: -30 }], // Center comet horizontally
+  },
+  cometText: {
+    fontSize: 100, // Adjust size for comet emoji
+    color: '#A15639', // Brownish color for the comet (matches palette)
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    marginBottom: 40,
+    color: '#C4E6DF', // Light teal for title text
+    letterSpacing: 2,
+    textAlign: 'center',
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#577877', // Dark teal background for input boxes
+    borderRadius: 10,
+    paddingLeft: 15,
+    marginBottom: 15,
+    color: '#C4E6DF', // Light teal text color inside inputs
+    fontSize: 16,
+  },
+  loginButton: {
+    width: '100%',
+    height: 50,
+    borderWidth: 2,
+    borderColor: '#F3D684',
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 24,
+  loginButtonText: {
+    color: '#FFFFFF', // White text for login button
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'black',
+  },
+  separator: {
+    width: '100%',
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#C4E6DF', // Light teal separator line
+    marginVertical: 20,
+  },
+  createAccountButton: {
+    width: '100%',
+    height: 50,
+    borderWidth: 2,
+    borderColor: '#F3D684', // Orange border for "Create an Account" button
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  createAccountButtonText: {
+    color: '#F3D684', // Orange text for "Create an Account" button
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
