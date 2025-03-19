@@ -36,7 +36,11 @@ const CreateAccountScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      {/* Comet Connect Title */}
+      <Text style={styles.appTitle}>COMET CONNECT</Text>
+
+      {/* Create Account Title */}
+      <Text style={styles.title}>Welcome, Comet!</Text>
 
       {/* Email Input */}
       <TextInput
@@ -55,7 +59,7 @@ const CreateAccountScreen = () => {
         disabled={isAuthenticating}
       >
         <Text style={styles.submitButtonText}>
-          {isAuthenticating ? 'Authenticating...' : 'Submit'}
+          {isAuthenticating ? 'Authenticating...' : 'AUTHENTICATE'}
         </Text>
       </TouchableOpacity>
 
@@ -68,37 +72,47 @@ const CreateAccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#C4E6DF',
+    backgroundColor: '#1A2A3D',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  appTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#C4E6DF', // UTD-themed blue
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: 'black',
+    color: '#F3D684',
   },
   input: {
-    width: '80%',
-    height: 40,
-    backgroundColor: '#fff',
-    borderRadius: 5,
+    width: '75%',  // Keep the same width
+    height: 30,    // Keep the skinniness
+    backgroundColor: '#CC6D4C', // Dark teal background for input boxes
+    borderRadius: 3,  // Less rounded edges
+    paddingLeft: 15,
+    paddingTop: 5,    // Add some padding to the top for text visibility
+    paddingBottom: 5, // Add some padding to the bottom for text visibility
     marginBottom: 15,
-    paddingLeft: 10,
+    color: '#C4E6DF', // Light teal text color inside inputs
     fontSize: 16,
   },
   submitButton: {
-    width: '80%',
+    width: '50%',
     height: 40,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#F3D684', 
+    borderRadius: 3,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#F3D684', 
+    fontSize: 18,
     fontWeight: 'bold',
   },
   loadingText: {
