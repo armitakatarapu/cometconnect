@@ -127,46 +127,48 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#577877', // Dark teal background for input boxes
-    borderRadius: 10,
+    width: '75%',  // Keep the same width
+    height: 30,    // Keep the skinniness
+    backgroundColor: '#CC6D4C', // Dark teal background for input boxes
+    borderRadius: 3,  // Less rounded edges
     paddingLeft: 15,
+    paddingTop: 5,    // Add some padding to the top for text visibility
+    paddingBottom: 5, // Add some padding to the bottom for text visibility
     marginBottom: 15,
     color: '#C4E6DF', // Light teal text color inside inputs
     fontSize: 16,
-  },
+},
   loginButton: {
-    width: '100%',
-    height: 50,
+    width: '50%',
+    height: 40,
     borderWidth: 2,
-    borderColor: '#F3D684',
+    borderColor: '#CC6D4C',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   loginButtonText: {
-    color: '#FFFFFF', // White text for login button
+    color: '#CC6D4C', // White text for login button
     fontSize: 18,
     fontWeight: 'bold',
   },
   separator: {
-    width: '100%',
+    width: '10%',
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#C4E6DF', // Light teal separator line
     marginVertical: 20,
   },
   createAccountButton: {
-    width: '100%',
-    height: 50,
+    width: '75%',
+    height: 40,
     borderWidth: 2,
-    borderColor: '#F3D684', // Orange border for "Create an Account" button
+    borderColor: '#F3D684', 
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   createAccountButtonText: {
-    color: '#F3D684', // Orange text for "Create an Account" button
+    color: '#F3D684', 
     fontSize: 18,
     fontWeight: 'bold',
   },

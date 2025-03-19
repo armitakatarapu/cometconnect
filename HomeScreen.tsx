@@ -17,7 +17,7 @@ const HomeScreen = ({ navigation }: Props) => {
 
       {/* Login Link */}
       <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.link}>
-        <Text style={styles.linkText}>Login</Text>
+        <Text style={styles.linkText}>LOGIN</Text>
       </TouchableOpacity>
 
       {/* Add space between the buttons */}
@@ -25,7 +25,7 @@ const HomeScreen = ({ navigation }: Props) => {
 
       {/* Create Account Link */}
       <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')} style={styles.link}>
-        <Text style={styles.linkText}>Create an Account</Text>
+        <Text style={styles.linkText}>CREATE AN ACCOUNT</Text>
       </TouchableOpacity>
     </View>
   );
