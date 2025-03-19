@@ -1,36 +1,37 @@
 import React, { useState } from 'react'; 
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from './types';  // Import the correct StackParamList type
+import { StackParamList } from './types'; // Ensure this contains the correct types
+import { useNavigation } from '@react-navigation/native';
 
-// Type the navigation prop
+// Define prop type for navigation
 type CreateAccountScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'CreateAccount'>;
 
-type CreateAccountScreenProps = {
-  navigation: CreateAccountScreenNavigationProp;
-};
+const CreateAccountScreen = () => {
+  const navigation = useNavigation<CreateAccountScreenNavigationProp>(); // Use navigation hook
 
-const CreateAccountScreen = ({ navigation }: CreateAccountScreenProps) => {
   const [email, setEmail] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);  // Fixed type here
+  const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
 
   const handleEmailSubmit = () => {
     setIsAuthenticating(true);
-    setIsEmailValid(null); // Reset the validity before checking
+    setIsEmailValid(null); // Reset validation state
 
-    // Simulate an email check (replace with real email validation logic)
+    // Simulating an email check
     setTimeout(() => {
       if (email.endsWith('@utdallas.edu')) {
         setIsEmailValid(true);
-        Alert.alert('Success', 'UTD email verified! Proceeding to create username and password.');
-        navigation.navigate('CreateUsernamePassword'); // Navigate to next screen
+        Alert.alert('Success', 'UTD email verified! Proceeding to next step.');
+
+        // Navigate to the username & password creation screen, passing the email
+        navigation.navigate('CreateUsernamePassword', { email });
       } else {
         setIsEmailValid(false);
         Alert.alert('Error', 'Please enter a valid UTD email.');
       }
       setIsAuthenticating(false);
-    }, 2000); // Simulating a 2-second delay for authentication
+    }, 2000);
   };
 
   return (
@@ -40,16 +41,17 @@ const CreateAccountScreen = ({ navigation }: CreateAccountScreenProps) => {
       {/* Email Input */}
       <TextInput
         style={styles.input}
-        placeholder="Enter your email"
+        placeholder="Enter your UTD email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+        autoCapitalize="none"
       />
 
-      {/* Button to submit the email */}
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={handleEmailSubmit}
+      {/* Button */}
+      <TouchableOpacity 
+        style={styles.submitButton} 
+        onPress={handleEmailSubmit} 
         disabled={isAuthenticating}
       >
         <Text style={styles.submitButtonText}>
@@ -57,10 +59,7 @@ const CreateAccountScreen = ({ navigation }: CreateAccountScreenProps) => {
         </Text>
       </TouchableOpacity>
 
-      {/* Show message if email is being authenticated */}
       {isAuthenticating && <Text style={styles.loadingText}>Authenticating...</Text>}
-
-      {/* Show result of email validation */}
       {isEmailValid === false && <Text style={styles.errorText}>Invalid UTD email.</Text>}
     </View>
   );
