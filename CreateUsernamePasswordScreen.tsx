@@ -1,23 +1,44 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackParamList } from './types'; // Ensure your StackParamList includes this screen
+import { StackParamList } from './types';
+import { Ionicons } from '@expo/vector-icons'; // Make sure you have @expo/vector-icons installed
 
 type Props = NativeStackScreenProps<StackParamList, 'CreateUsernamePassword'>;
 
 const CreateUsernamePasswordScreen = ({ route, navigation }: Props) => {
-  const { email } = route.params; // Get email passed from previous screen
+  const { email } = route.params;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [reEnterPassword, setReEnterPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleCreateAccount = () => {
-    console.log('Account Created:', { email, username, password });
-    // Add logic to store credentials (Firebase, API, database, etc.)
-    navigation.navigate('Home'); // Navigate to home after successful account creation
+  // Password Validation Function
+  const validatePassword = (password: string) => {
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return password.length >= 8 && hasNumber && hasSpecialChar;
+  };
+
+  // Handle navigation only if all validation passes
+  const handleNext = () => {
+    if (!validatePassword(password)) {
+      setErrorMessage('Password must be 8+ characters, with 1 number & 1 special character.');
+      return;
+    }
+    if (password !== reEnterPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
+    setErrorMessage('');
+    
+    // Navigate to profile creation
+    navigation.navigate('CreateProfile', { email, username });
   };
 
   return (
     <View style={styles.container}>
+      <Text style={styles.appTitle}>Comet Connect</Text>
       <Text style={styles.title}>Set Up Your Account</Text>
 
       {/* Username Input */}
@@ -38,12 +59,21 @@ const CreateUsernamePasswordScreen = ({ route, navigation }: Props) => {
         onChangeText={setPassword}
       />
 
-      {/* Submit Button */}
-      <TouchableOpacity 
-        style={styles.submitButton} 
-        onPress={handleCreateAccount}
-      >
-        <Text style={styles.submitButtonText}>Create Account</Text>
+      {/* Re-enter Password Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="Re-enter password"
+        secureTextEntry
+        value={reEnterPassword}
+        onChangeText={setReEnterPassword}
+      />
+
+      {/* Error Message */}
+      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
+      {/* Arrow Button to Move to Next Screen */}
+      <TouchableOpacity style={styles.arrowButton} onPress={handleNext}>
+        <Ionicons name="arrow-forward-circle" size={50} color="#4CAF50" />
       </TouchableOpacity>
     </View>
   );
@@ -56,6 +86,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  appTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,
@@ -72,18 +108,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16,
   },
-  submitButton: {
-    width: '80%',
-    height: 40,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
   },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  arrowButton: {
+    marginTop: 20,
   },
 });
 
