@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   appTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#C4E6DF', // UTD-themed blue
+    color: '#C4E6DF', 
     marginBottom: 10,
   },
   title: {
