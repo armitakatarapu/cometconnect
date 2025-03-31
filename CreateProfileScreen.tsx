@@ -25,7 +25,7 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
   };
 
   const handleFinish = () => {
-    setMessage("You're all set! Let's start chatting...");
+    setMessage("You're all set! Start chatting...");
   };
 
   return (
@@ -72,7 +72,7 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
       <Text style={styles.bioCount}>{bioLength}/70</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleFinish}>
-        <Text style={styles.buttonText}>Let's Go</Text>
+        <Text style={styles.buttonText}>LET'S GO!</Text>
       </TouchableOpacity>
 
       {message ? <Text style={styles.message}>{message}</Text> : null}
@@ -82,17 +82,33 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#316489' },
-  label: { fontSize: 16, fontWeight: '600', color: '6DBDCB', marginBottom: 5 },
-  input: { backgroundColor: 'white', padding: 10, marginBottom: 15, borderRadius: 5 },
+  label: { fontSize: 16, fontWeight: '600', color: '#6DBDCB', marginBottom: 5 },
+  input: { backgroundColor: '#CC6D4C', padding: 10, marginBottom: 15, borderRadius: 5 },
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 },
   halfWidth: { width: '48%' },
-  picker: { backgroundColor: 'white', marginBottom: 10 },
-  tagsInput: { backgroundColor: 'white', padding: 10, marginBottom: 15, borderRadius: 5, height: 60 },
-  bioInput: { backgroundColor: 'white', padding: 10, marginBottom: 10, borderRadius: 5, height: 100 },
-  bioCount: { color: 'white', marginBottom: 15, textAlign: 'right' },
-  button: { backgroundColor: '#4CAF50', padding: 15, borderRadius: 5, alignItems: 'center' },
-  buttonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-  message: { color: 'white', fontSize: 16, textAlign: 'center', marginTop: 20 },
+  picker: { backgroundColor: '#CC6D4C', marginBottom: 10 },
+  tagsInput: {
+    backgroundColor: '#316489',
+    padding: 10,
+    marginBottom: 15,
+    borderRadius: 5,
+    height: 60,
+    borderWidth: 2, // Black border added
+    borderColor: 'black',
+  },
+  bioInput: {
+    backgroundColor: '#316489',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+    height: 100,
+    borderWidth: 2, // Black border added
+    borderColor: 'black',
+  },
+  bioCount: { color: '#C4E6DF', marginBottom: 15, textAlign: 'right' },
+  button: { backgroundColor: '#F3D684', padding: 15, borderRadius: 5, alignItems: 'center' },
+  buttonText: { color: 'black', fontSize: 18, fontWeight: 'bold' },
+  message: { color: '#F3D684', fontSize: 16, textAlign: 'center', marginTop: 20 },
 });
 
 export default CreateProfileScreen;
