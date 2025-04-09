@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "539372638586",
+    "project_id": "cometconnect-dcd47",
+    "storage_bucket": "cometconnect-dcd47.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539372638586:android:a51d5926b20ef7d1b986c3",
+        "android_client_info": {
+          "package_name": "com.cometconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB07KNnH9wxLQPJdwUF7EOVUBRFiw1JA-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
