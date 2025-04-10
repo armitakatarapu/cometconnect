@@ -25,7 +25,17 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
   };
 
   const handleFinish = () => {
-    setMessage("You're all set! Start chatting...");
+    if (!firstName || !lastName || !pronoun) {
+      setMessage('Please fill out all required fields.');
+      return;
+    }
+    setMessage("You're all set! Start chatting...")
+    navigation.replace('MainScreen', {
+      username: username,
+      email: email,
+      tags: tags,
+      bio: bio,
+    });
   };
 
   return (

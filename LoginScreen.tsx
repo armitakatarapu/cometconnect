@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Animated } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from './types'; // Correct import
+import auth from '@react-native-firebase/auth';
+
 
 // Define the param list for your navigator
 type LoginScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Login'>;
@@ -26,13 +28,23 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     }).start();
   }, [cometAnim]);
 
-  const handleLogin = () => {
-    if (username && password) {
-      Alert.alert('Login functionality coming soon!');
-    } else {
+  const handleLogin = async () => {
+    if (!username || !password) {
       Alert.alert('Please enter both username and password.');
+      return;
+    }
+  
+    try {
+      await auth().signInWithEmailAndPassword(username, password);
+      Alert.alert('Logged in successfully!');
+      // Optionally navigate to home or profile screen
+      navigation.navigate('Home');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      Alert.alert('Login failed', error.message);
     }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -81,7 +93,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       {/* Create Login Button */}
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate('Login')}
+        onPress={handleLogin}
       >
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>

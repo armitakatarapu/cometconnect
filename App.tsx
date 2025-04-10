@@ -6,6 +6,7 @@ import LoginScreen from './LoginScreen';
 import CreateAccountScreen from './CreateAccountScreen';
 import CreateUsernamePasswordScreen from './CreateUsernamePasswordScreen'; 
 import CreateProfileScreen from './CreateProfileScreen.tsx'; // Import CreateProfileScreen
+import MainScreen from './MainScreen';
 import { StackParamList } from './types';
 
 const Stack = createNativeStackNavigator<StackParamList>();
@@ -19,7 +20,8 @@ const App = () => {
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
         <Stack.Screen name="CreateUsernamePassword" component={CreateUsernamePasswordScreen} />
         <Stack.Screen name="CreateProfile" component={CreateProfileScreen} /> 
-      </Stack.Navigator>
+        <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />     
+        </Stack.Navigator>
     </NavigationContainer>
   );
 };

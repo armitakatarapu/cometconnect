@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from './types';
+import auth from '@react-native-firebase/auth';
+
 
 type Props = NativeStackScreenProps<StackParamList, 'CreateUsernamePassword'>;
 
@@ -20,20 +22,31 @@ const CreateUsernamePasswordScreen = ({ route, navigation }: Props) => {
   };
 
   // Handle navigation only if all validation passes
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!validatePassword(password)) {
       setErrorMessage('Password must be 8+ characters, with 1 number & 1 special character.');
       return;
     }
+  
     if (password !== reEnterPassword) {
       setErrorMessage('Passwords do not match.');
       return;
     }
-    setErrorMessage('');
-    
-    // Navigate to profile creation
-    navigation.navigate('CreateProfile', { email, username });
+  
+    setErrorMessage(''); // Reset error message
+  
+    try {
+      // Firebase user creation
+      await auth().createUserWithEmailAndPassword(email, password);
+  
+      // Navigate to profile creation screen, passing email and username
+      navigation.navigate('CreateProfile', { email, username });
+    } catch (error: any) {
+      console.error('Firebase user creation error:', error);
+      setErrorMessage(error.message); // Show Firebase error message
+    }
   };
+  
 
   return (
     <View style={styles.container}>

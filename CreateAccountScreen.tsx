@@ -1,37 +1,46 @@
 import React, { useState } from 'react'; 
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from './types'; // Ensure this contains the correct types
+import { StackParamList } from './types';
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 // Define prop type for navigation
 type CreateAccountScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'CreateAccount'>;
 
 const CreateAccountScreen = () => {
-  const navigation = useNavigation<CreateAccountScreenNavigationProp>(); // Use navigation hook
+  const navigation = useNavigation<CreateAccountScreenNavigationProp>();
 
   const [email, setEmail] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
 
-  const handleEmailSubmit = () => {
+  const handleEmailSubmit = async () => {
+    const trimmedEmail = email.trim().toLowerCase(); // Clean the email input
     setIsAuthenticating(true);
     setIsEmailValid(null); // Reset validation state
 
-    // Simulating an email check
-    setTimeout(() => {
-      if (email.endsWith('@utdallas.edu')) {
+    try {
+      const user = await auth().fetchSignInMethodsForEmail(trimmedEmail);
+
+      if (user.length > 0) {
+        setIsEmailValid(false);
+        Alert.alert('Error', 'This email is already registered. Please use another email.');
+      } else if (trimmedEmail.endsWith('@utdallas.edu')) {
         setIsEmailValid(true);
         Alert.alert('Success', 'UTD email verified! Proceeding to next step.');
-
-        // Navigate to the username & password creation screen, passing the email
-        navigation.navigate('CreateUsernamePassword', { email });
+        navigation.navigate('CreateUsernamePassword', { email: trimmedEmail });
       } else {
         setIsEmailValid(false);
         Alert.alert('Error', 'Please enter a valid UTD email.');
       }
-      setIsAuthenticating(false);
-    }, 2000);
+    } catch (error: any) {
+      setIsEmailValid(false);
+      console.error('Error checking email:', error.code, error.message);
+      Alert.alert('Error', error.message || 'An error occurred while checking the email.');
+    }
+
+    setIsAuthenticating(false);
   };
 
   return (
@@ -90,15 +99,15 @@ const styles = StyleSheet.create({
     color: '#F3D684',
   },
   input: {
-    width: '75%',  // Keep the same width
-    height: 30,    // Keep the skinniness
-    backgroundColor: '#CC6D4C', // Dark teal background for input boxes
-    borderRadius: 3,  // Less rounded edges
+    width: '75%',
+    height: 30,
+    backgroundColor: '#CC6D4C',
+    borderRadius: 3,
     paddingLeft: 15,
-    paddingTop: 5,    // Add some padding to the top for text visibility
-    paddingBottom: 5, // Add some padding to the bottom for text visibility
+    paddingTop: 5,
+    paddingBottom: 5,
     marginBottom: 15,
-    color: '#C4E6DF', // Light teal text color inside inputs
+    color: '#C4E6DF',
     fontSize: 16,
   },
   submitButton: {
