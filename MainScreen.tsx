@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons'; // Or your preferred icon set
-import { StackParamList } from './types';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import ProfileScreen from './ProfileScreen';
 import ChatScreen from './ChatScreen';
@@ -19,6 +18,13 @@ const MainScreen = () => {
       }}
     >
       <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => <Icon name="search" color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
         name="Profiles"
         component={ProfileScreen}
         options={{
@@ -32,15 +38,9 @@ const MainScreen = () => {
           tabBarIcon: ({ color, size }) => <Icon name="chatbubble" color={color} size={size} />,
         }}
       />
-      <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => <Icon name="search" color={color} size={size} />,
-        }}
-      />
     </Tab.Navigator>
   );
 };
 
 export default MainScreen;
+

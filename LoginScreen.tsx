@@ -38,7 +38,12 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       await auth().signInWithEmailAndPassword(username, password);
       Alert.alert('Logged in successfully!');
       // Optionally navigate to home or profile screen
-      navigation.navigate('Home');
+      navigation.replace('MainScreen', {
+        username: username,
+        email: username,
+        tags: '',
+        bio: '',
+      });
     } catch (error: any) {
       console.error('Login error:', error);
       Alert.alert('Login failed', error.message);
@@ -74,7 +79,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       {/* Username Input */}
       <TextInput
         style={styles.input}
-        placeholder="USERNAME"
+        placeholder="EMAIL"
         placeholderTextColor="#C4E6DF" // Light teal placeholder color
         value={username}
         onChangeText={setUsername}
