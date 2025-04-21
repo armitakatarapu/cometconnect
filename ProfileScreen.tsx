@@ -47,11 +47,12 @@ const ProfileScreen = () => {
       <View style={styles.divider} />
 
       <View style={styles.tagsContainer}>
-        {profileData.tags?.split(',').map((tag: string, index: number) => (
-          <View key={index} style={styles.tag}>
-            <Text style={styles.tagText}>{tag.trim()}</Text>
-          </View>
-        ))}
+        {profileData.tags?.map((tag: string, index: number) => (
+      <View key={index} style={styles.tag}>
+      <Text style={styles.tagText}>{tag}</Text>
+      </View>
+      ))}
+
       </View>
 
       <View style={styles.divider} />

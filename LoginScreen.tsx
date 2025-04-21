@@ -41,7 +41,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       navigation.replace('MainScreen', {
         username: username,
         email: username,
-        tags: '',
+        tags: [],
         bio: '',
       });
     } catch (error: any) {

@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from './types';
 import firestore from '@react-native-firebase/firestore';
 
-
-
 type Props = NativeStackScreenProps<StackParamList, 'CreateProfile'>;
 
 const CreateProfileScreen = ({ route, navigation }: Props) => {
-  const { email, username } = route.params; // Receive parameters
+  const { email, username } = route.params;
+
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
   const [pronoun, setPronoun] = useState('');
-  const [tags, setTags] = useState('');
   const [bio, setBio] = useState('');
   const [bioLength, setBioLength] = useState(0);
   const [message, setMessage] = useState('');
+
+  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
 
   const handleBioChange = (text: string) => {
     if (text.length <= 70) {
@@ -27,14 +28,25 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
     }
   };
 
+  const handleAddTag = () => {
+    const trimmed = tagInput.trim();
+    if (trimmed && !tags.includes(trimmed)) {
+      setTags([...tags, trimmed]);
+    }
+    setTagInput('');
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
   const handleFinish = async () => {
     if (!firstName || !lastName || !pronoun) {
       setMessage('Please fill out all required fields.');
       return;
     }
-  
+
     try {
-      // Store user profile info in Firestore
       await firestore()
         .collection('users')
         .doc(email)
@@ -49,10 +61,9 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
           bio,
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
-  
+
       setMessage("You're all set! Start chatting...");
-  
-      // Navigate to main app screen
+
       navigation.replace('MainScreen', {
         username,
         email,
@@ -64,7 +75,7 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
       setMessage('Failed to save your profile. Please try again.');
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>First Name</Text>
@@ -87,14 +98,33 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
             <Picker.Item label="Other" value="other" />
           </Picker>
         </View>
+
         <View style={styles.halfWidth}>
           <Text style={styles.label}>Tags</Text>
-          <TextInput
-            style={styles.tagsInput}
-            placeholder="Add Tags (e.g., developer, student)"
-            value={tags}
-            onChangeText={setTags}
-          />
+          <View style={styles.tagInputContainer}>
+            <TextInput
+              style={styles.tagTextInput}
+              placeholder="Add a tag..."
+              value={tagInput}
+              onChangeText={setTagInput}
+              onSubmitEditing={handleAddTag}
+              returnKeyType="done"
+            />
+            <FlatList
+              data={tags}
+              horizontal
+              keyExtractor={(item) => item}
+              contentContainerStyle={styles.tagsList}
+              renderItem={({ item }) => (
+                <View style={styles.tag}>
+                  <Text style={styles.tagText}>{item}</Text>
+                  <TouchableOpacity onPress={() => handleRemoveTag(item)}>
+                    <Text style={styles.removeTag}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+          </View>
         </View>
       </View>
 
@@ -124,22 +154,53 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 },
   halfWidth: { width: '48%' },
   picker: { backgroundColor: '#CC6D4C', marginBottom: 10 },
-  tagsInput: {
+
+  // --- Tags Styling ---
+  tagInputContainer: {
     backgroundColor: '#316489',
     padding: 10,
-    marginBottom: 15,
     borderRadius: 5,
-    height: 60,
-    borderWidth: 2, // Black border added
+    borderWidth: 2,
     borderColor: 'black',
+    marginBottom: 10,
   },
+  tagTextInput: {
+    height: 40,
+    color: 'white',
+  },
+  tagsList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3D684',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  tagText: {
+    color: 'black',
+    marginRight: 5,
+    fontWeight: '600',
+  },
+  removeTag: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+
+  // --- Bio & Button ---
   bioInput: {
     backgroundColor: '#316489',
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
     height: 100,
-    borderWidth: 2, // Black border added
+    borderWidth: 2,
     borderColor: 'black',
   },
   bioCount: { color: '#C4E6DF', marginBottom: 15, textAlign: 'right' },
@@ -149,4 +210,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateProfileScreen;
-
