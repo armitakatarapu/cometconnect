@@ -3,6 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Animated } 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from './types'; // Correct import
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 
 
 // Define the param list for your navigator
@@ -35,20 +37,41 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     }
   
     try {
-      await auth().signInWithEmailAndPassword(username, password);
+      // 🔍 Step 1: Lookup email from Firestore
+      const querySnapshot = await firestore()
+        .collection('users')
+        .where('username', '==', username)
+        .limit(1)
+        .get();
+  
+      if (querySnapshot.empty) {
+        Alert.alert('Login failed', 'Username not found.');
+        return;
+      }
+  
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      const email = userData.email;
+  
+      // 🔐 Step 2: Authenticate with found email
+      await auth().signInWithEmailAndPassword(email, password);
+  
       Alert.alert('Logged in successfully!');
-      // Optionally navigate to home or profile screen
+  
+      // ✅ Step 3: Navigate and pass data
       navigation.replace('MainScreen', {
         username: username,
-        email: username,
-        tags: [],
-        bio: '',
+        email: email,
+        tags: userData.tags || [],
+        bio: userData.bio || '',
       });
+  
     } catch (error: any) {
       console.error('Login error:', error);
       Alert.alert('Login failed', error.message);
     }
   };
+  
   
 
   return (
