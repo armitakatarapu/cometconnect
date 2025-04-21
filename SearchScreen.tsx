@@ -11,6 +11,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
+const tagColors = ['#F1D87C', '#D9884C', '#D9735A', '#C96352', '#8BA6C1', '#6DBDCB'];
+
+const getRandomColor = () => {
+  return tagColors[Math.floor(Math.random() * tagColors.length)];
+};
+
 type Profile = {
   id: string;
   name: string;
@@ -42,7 +48,7 @@ const SearchScreen = () => {
             id: doc.id,
             name: `${data.firstName} ${data.middleName} ${data.lastName}`.trim(),
             tags: data.tags || [],
-            color: '#F1D87C', // You can randomize or theme this
+            color: getRandomColor(), // You can randomize or theme this
           });
         }
       });
