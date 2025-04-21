@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Profile } from './types'; // Adjust path if needed
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-// === Placeholder for future backend call ===
-const fetchProfiles = async (): Promise<Profile[]> => {
-  return [
-    { id: '1', name: 'Alice Johnson', tags: ['Freshman', 'Commuter'], color: '#F1D87C' },
-    { id: '2', name: 'Bob Lee', tags: ['Sophomore'], color: '#D9884C' },
-    { id: '3', name: 'Carla Smith', tags: ['Freshman'], color: '#D9735A' },
-    { id: '4', name: 'Dan Kim', tags: ['Transfer', 'Commuter'], color: '#C96352' },
-  ];
+type Profile = {
+  id: string;
+  name: string;
+  tags: string[];
+  color: string;
 };
 
 const SearchScreen = () => {
@@ -18,14 +23,36 @@ const SearchScreen = () => {
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
   const [searchText, setSearchText] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [myTags, setMyTags] = useState<string[]>([]);
 
   useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchProfiles();
-      setProfiles(data);
-      setFilteredProfiles(data);
+    const fetchData = async () => {
+      const currentEmail = auth().currentUser?.email;
+      const snapshot = await firestore().collection('users').get();
+
+      const otherProfiles: Profile[] = [];
+      let currentUserTags: string[] = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (doc.id === currentEmail) {
+          currentUserTags = data.tags || [];
+        } else {
+          otherProfiles.push({
+            id: doc.id,
+            name: `${data.firstName} ${data.middleName} ${data.lastName}`.trim(),
+            tags: data.tags || [],
+            color: '#F1D87C', // You can randomize or theme this
+          });
+        }
+      });
+
+      setProfiles(otherProfiles);
+      setMyTags(currentUserTags);
+      setFilteredProfiles(otherProfiles);
     };
-    loadData();
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -44,8 +71,6 @@ const SearchScreen = () => {
     setFilteredProfiles(result);
   }, [searchText, selectedTag, profiles]);
 
-  const uniqueTags = [...new Set(profiles.flatMap(p => p.tags))];
-
   const renderItem = ({ item }: { item: Profile }) => (
     <View style={[styles.card, { borderLeftColor: item.color }]}>
       <View style={styles.profileCircle} />
@@ -55,12 +80,10 @@ const SearchScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Filter Section Title */}
       <Text style={styles.sectionTitle}>Filter Tags</Text>
 
-      {/* Filter Tags */}
       <View style={styles.filterTags}>
-        {uniqueTags.map(tag => (
+        {myTags.map(tag => (
           <TouchableOpacity
             key={tag}
             onPress={() => setSelectedTag(tag === selectedTag ? null : tag)}
@@ -70,12 +93,13 @@ const SearchScreen = () => {
             </Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity onPress={() => setSelectedTag(null)}>
-          <Text style={styles.clearFilter}>✕</Text>
-        </TouchableOpacity>
+        {selectedTag && (
+          <TouchableOpacity onPress={() => setSelectedTag(null)}>
+            <Text style={styles.clearFilter}>✕</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Recommended Profiles */}
       <FlatList
         data={filteredProfiles}
         keyExtractor={item => item.id}
@@ -83,10 +107,8 @@ const SearchScreen = () => {
         contentContainerStyle={styles.list}
       />
 
-      {/* Divider */}
       <View style={styles.divider} />
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Icon name="search" size={20} color="#999" style={styles.searchIcon} />
         <TextInput
@@ -166,9 +188,9 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 2,
-    width: '30%',           
+    width: '30%',
     backgroundColor: '#aaa',
-    alignSelf: 'center',    
+    alignSelf: 'center',
     marginTop: 10,
     marginBottom: 40,
   },
