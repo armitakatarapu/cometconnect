@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       {/* Username Input */}
       <TextInput
         style={styles.input}
-        placeholder="EMAIL"
+        placeholder="USERNAME"
         placeholderTextColor="#C4E6DF" // Light teal placeholder color
         value={username}
         onChangeText={setUsername}

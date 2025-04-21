@@ -1,39 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-
-const profileData = {
-  name: 'First Middle Last',
-  username: '@username',
-  email: 'abc123456@utdallas.edu',
-  tags: ['T.A.G.', 'T.A.G.', 'T.A.G.', 'T.A.G.', 'T.A.G.', 'T.A.G.'],
-  bio: 'Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.',
-};
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const ProfileScreen = () => {
+  const [profileData, setProfileData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = auth().currentUser;
+      const email = user?.email;
+  
+      if (!email) return;
+  
+      try {
+        const doc = await firestore().collection('users').doc(email).get();
+        if (doc.exists) {
+          setProfileData(doc.data());
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+  
+
+  if (!profileData) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: '#333' }}>Loading profile...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Avatar + Info */}
       <View style={styles.avatarPlaceholder} />
-      <Text style={styles.name}>{profileData.name}</Text>
-      <Text style={styles.username}>{profileData.username}</Text>
+      <Text style={styles.name}>
+        {profileData.firstName} {profileData.middleName} {profileData.lastName}
+      </Text>
+      <Text style={styles.username}>@{profileData.username}</Text>
       <Text style={styles.email}>{profileData.email}</Text>
 
-      {/* Divider after email */}
       <View style={styles.divider} />
 
-      {/* Tags */}
       <View style={styles.tagsContainer}>
-        {profileData.tags.map((tag, index) => (
+        {profileData.tags?.split(',').map((tag: string, index: number) => (
           <View key={index} style={styles.tag}>
-            <Text style={styles.tagText}>{tag}</Text>
+            <Text style={styles.tagText}>{tag.trim()}</Text>
           </View>
         ))}
       </View>
 
-      {/* Divider after tags */}
       <View style={styles.divider} />
 
-      {/* Bio */}
       <Text style={styles.bio}>{profileData.bio}</Text>
     </ScrollView>
   );
@@ -44,7 +66,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#BFD9EA', // Full-screen soft blue background
+    backgroundColor: '#BFD9EA',
   },
   avatarPlaceholder: {
     width: 100,

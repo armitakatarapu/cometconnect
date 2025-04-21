@@ -25,7 +25,7 @@ const MainScreen = () => {
         }}
       />
       <Tab.Screen
-        name="Profiles"
+        name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => <Icon name="people" color={color} size={size} />,

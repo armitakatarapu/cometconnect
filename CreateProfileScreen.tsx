@@ -3,6 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { Picker } from '@react-native-picker/picker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackParamList } from './types';
+import firestore from '@react-native-firebase/firestore';
+
+
 
 type Props = NativeStackScreenProps<StackParamList, 'CreateProfile'>;
 
@@ -24,20 +27,44 @@ const CreateProfileScreen = ({ route, navigation }: Props) => {
     }
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     if (!firstName || !lastName || !pronoun) {
       setMessage('Please fill out all required fields.');
       return;
     }
-    setMessage("You're all set! Start chatting...")
-    navigation.replace('MainScreen', {
-      username: username,
-      email: email,
-      tags: tags,
-      bio: bio,
-    });
+  
+    try {
+      // Store user profile info in Firestore
+      await firestore()
+        .collection('users')
+        .doc(email)
+        .set({
+          username,
+          email,
+          firstName,
+          middleName,
+          lastName,
+          pronoun,
+          tags,
+          bio,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        });
+  
+      setMessage("You're all set! Start chatting...");
+  
+      // Navigate to main app screen
+      navigation.replace('MainScreen', {
+        username,
+        email,
+        tags,
+        bio,
+      });
+    } catch (error) {
+      console.error('Error saving user profile:', error);
+      setMessage('Failed to save your profile. Please try again.');
+    }
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.label}>First Name</Text>
