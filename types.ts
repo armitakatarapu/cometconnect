@@ -5,6 +5,7 @@ export type StackParamList = {
   CreateAccount: undefined;
   CreateUsernamePassword: { email: string }
   CreateProfile: { email: string; username: string };
+  UserProfile: undefined;
 };
 
   
